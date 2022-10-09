@@ -13,6 +13,7 @@ pipeline {
         stage('building docker image') {
             steps {
                 script {
+                    sh "aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin 571784116714.dkr.ecr.ap-south-1.amazonaws.com"
                     sh "sudo docker build -t571784116714.dkr.ecr.ap-south-1.amazonaws.com/ecs-demo:v_${BUILD_NUMBER} ."
                 }
             }
