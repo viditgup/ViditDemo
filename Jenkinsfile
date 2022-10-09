@@ -30,10 +30,10 @@ pipeline {
                 script {
                     sh '''
                         OLD_TASK_DEF=$(aws ecs describe-task-definition --task-definition $(echo ${TASK_DEFINATION}|awk '{print tolower($0)}') --region ${REGION} --output json)
-                        NEW_TASK_DEF=$(echo $OLD_TASK_DEF | jq --arg NDI 571784116714.dkr.ecr.ap-south-1.amazonaws.com/ecs-demo:v_${BUILD_NUMBER}" '.taskDefinition.containerDefinitions[0].image=$NDI')
+                        NEW_TASK_DEF=$(echo $OLD_TASK_DEF | jq --arg NDI 571784116714.dkr.ecr.ap-south-1.amazonaws.com/ecs-demo:v_${BUILD_NUMBER} '.taskDefinition.containerDefinitions[0].image=$NDI')
                         FINAL_TASK=$(echo $NEW_TASK_DEF | jq '.taskDefinition|{family: .family, volumes: .volumes, containerDefinitions: .containerDefinitions}')
-                        aws ecs register-task-definition  --region ${REGION} --family $(echo ${TASK_DEFINATION}|awk '{print tolower($0)}') --cli-input-json "$(echo $FINAL_TASK)"
-                        aws ecs update-service --force-new-deployment --region ${REGION} --service ${SERVICE} --task-definition $(echo ${TASK_DEFINATION}|awk '{print tolower($0)}') --cluster ${CLUSTER_NAME}
+                        aws ecs register-task-definition --region ${REGION} --family $(echo ${TASK_DEFINATION}|awk '{print tolower($0)}') --cli-input-json "$(echo $FINAL_TASK)"
+                        aws ecs update-service --force-new-deployment --profile staging-non-mfa --region ${REGION} --service ${SERVICE} --task-definition $(echo ${TASK_DEFINATION}|awk '{print tolower($0)}') --cluster ${CLUSTER_NAME}
 
                     '''
                 }
